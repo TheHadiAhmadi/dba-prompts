@@ -1,0 +1,228 @@
+{
+    "notes": [
+        {
+            "content": "Using CHAR(36) for GUIDs is inefficient. Consider using BINARY(16) with UUID_TO_BIN() and BIN_TO_UUID() functions for better storage efficiency and performance.",
+            "priority": 2
+        },
+        {
+            "content": "Multiple tables use TEXT columns for structured data (e.g., comma-separated values). Consider normalizing these into separate tables for better query performance and data integrity.",
+            "priority": 3
+        },
+        {
+            "content": "TINYINT(1) is used for boolean values. While functional, consider using BIT(1) for slightly better storage efficiency, though TINYINT(1) is commonly accepted practice.",
+            "priority": 4
+        }
+    ],
+    "columns": [
+        {
+            "table": "ApiTokens",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "ApiTokenPolicies",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "ApiTokenPolicies",
+            "column": "ApiTokenId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "GlobalSettings",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "GlobalSettings",
+            "column": "SuperAdmins",
+            "priority": 3,
+            "suggestedType": "Separate table for super admins",
+            "reason": "Storing comma-separated values in TEXT column is inefficient. Normalize into separate table for better query performance and data integrity"
+        },
+        {
+            "table": "PluginDefinitions",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "PluginDefinitionTypes",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "PluginDefinitionTypes",
+            "column": "PluginDefinitionId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Sites",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Sites",
+            "column": "Urls",
+            "priority": 3,
+            "suggestedType": "Separate table for site URLs",
+            "reason": "Storing comma-separated values in TEXT column is inefficient. Normalize into separate table for better query performance and data integrity"
+        },
+        {
+            "table": "Settings",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "SettingValues",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "SettingValues",
+            "column": "SettingsId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Users",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Roles",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Roles",
+            "column": "SiteId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Folders",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Folders",
+            "column": "SiteId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Folders",
+            "column": "ParentId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Files",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Files",
+            "column": "SiteId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Files",
+            "column": "FolderId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Blocks",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Blocks",
+            "column": "SiteId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Pages",
+            "column": "Id",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Pages",
+            "column": "SiteId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Pages",
+            "column": "ParentId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Pages",
+            "column": "LayoutId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Pages",
+            "column": "EditLayoutId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        },
+        {
+            "table": "Pages",
+            "column": "DetailLayoutId",
+            "priority": 2,
+            "suggestedType": "BINARY(16)",
+            "reason": "Use BINARY(16) instead of CHAR(36) for GUIDs to save storage space and improve performance"
+        }
+    ]
+}

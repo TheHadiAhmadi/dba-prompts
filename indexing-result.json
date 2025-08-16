@@ -1,0 +1,88 @@
+{
+    "notes": [
+        {
+            "content": "The schema heavily uses GUIDs (CHAR(36)) as primary keys, which can lead to performance issues due to their random nature. However, this review focuses solely on indexing concerns as requested.",
+            "priority": 3
+        },
+        {
+            "content": "Several tables have columns with TEXT data type that might benefit from full-text indexing if text searches are common. However, no specific queries were provided to confirm this need.",
+            "priority": 4
+        },
+        {
+            "content": "The IX_Users_UserName_Email index on the Users table includes both UserName and Email, but queries typically filter on one column at a time. Consider separate indexes for better selectivity.",
+            "priority": 3
+        }
+    ],
+    "indexes": [
+        {
+            "table": "ApiTokens",
+            "issue": "missing_index",
+            "priority": 2,
+            "suggestedIndex": "CREATE INDEX IX_ApiTokens_Key ON ApiTokens (`Key`);",
+            "reason": "The `Key` column is likely used frequently for lookups when authenticating API requests, but there's no index on it."
+        },
+        {
+            "table": "Users",
+            "issue": "suboptimal_index",
+            "priority": 3,
+            "suggestedIndex": "Consider separate indexes: CREATE INDEX IX_Users_UserName ON Users (UserName); CREATE INDEX IX_Users_Email ON Users (Email);",
+            "reason": "Queries usually filter on either UserName or Email individually. A composite index may not be optimal for single-column searches."
+        },
+        {
+            "table": "Users",
+            "issue": "missing_index",
+            "priority": 2,
+            "suggestedIndex": "CREATE INDEX IX_Users_NormalizedUserName ON Users (NormalizedUserName);",
+            "reason": "NormalizedUserName is likely used for case-insensitive user lookups but lacks an index."
+        },
+        {
+            "table": "Users",
+            "issue": "missing_index",
+            "priority": 2,
+            "suggestedIndex": "CREATE INDEX IX_Users_NormalizedEmail ON Users (NormalizedEmail);",
+            "reason": "NormalizedEmail is likely used for case-insensitive email lookups but lacks an index."
+        },
+        {
+            "table": "Roles",
+            "issue": "missing_index",
+            "priority": 3,
+            "suggestedIndex": "CREATE INDEX IX_Roles_Name ON Roles (Name);",
+            "reason": "While there's an index on SiteId+Name, a separate index on Name could be useful for role lookups that don't involve SiteId."
+        },
+        {
+            "table": "Folders",
+            "issue": "missing_index",
+            "priority": 3,
+            "suggestedIndex": "CREATE INDEX IX_Folders_ParentId ON Folders (ParentId);",
+            "reason": "ParentId is used to build folder hierarchies. An index would improve traversal queries."
+        },
+        {
+            "table": "Files",
+            "issue": "missing_index",
+            "priority": 3,
+            "suggestedIndex": "CREATE INDEX IX_Files_FolderId ON Files (FolderId);",
+            "reason": "Although there's a foreign key constraint on FolderId, there's no index which would help with file lookups by folder."
+        },
+        {
+            "table": "Files",
+            "issue": "missing_index",
+            "priority": 3,
+            "suggestedIndex": "CREATE INDEX IX_Files_NormalizedName ON Files (NormalizedName);",
+            "reason": "Normalized file name searches may be performed without involving SiteId, requiring a separate index."
+        },
+        {
+            "table": "Pages",
+            "issue": "missing_index",
+            "priority": 3,
+            "suggestedIndex": "CREATE INDEX IX_Pages_ParentId ON Pages (ParentId);",
+            "reason": "ParentId is used for page hierarchy navigation and should be indexed."
+        },
+        {
+            "table": "Pages",
+            "issue": "missing_index",
+            "priority": 3,
+            "suggestedIndex": "CREATE INDEX IX_Pages_Title ON Pages (Title);",
+            "reason": "Page title searches may occur independently of SiteId."
+        }
+    ]
+}

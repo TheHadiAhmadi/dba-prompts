@@ -1,0 +1,114 @@
+{
+    "notes": [
+        {
+            "content": "Consider adding unique constraints on columns that should be unique but currently lack them, such as ApiTokens.Key or Users.UserName",
+            "priority": 3
+        },
+        {
+            "content": "Users table has several nullable fields that might benefit from NOT NULL constraints depending on business logic (e.g., UserName, Email)",
+            "priority": 3
+        },
+        {
+            "content": "Consider adding a unique constraint on Roles(SiteId, Name) to prevent duplicate role names within a site",
+            "priority": 3
+        },
+        {
+            "content": "Folders and Files tables might need unique constraints on (SiteId, Name) or (FolderId, Name) to prevent duplicates",
+            "priority": 3
+        },
+        {
+            "content": "Pages table lacks a unique constraint on (SiteId, Path) which could lead to duplicate URLs",
+            "priority": 3
+        }
+    ],
+    "constraints": [
+        {
+            "table": "ApiTokens",
+            "column": "Key",
+            "issue": "missing_unique",
+            "priority": 2,
+            "suggestedConstraint": "UNIQUE KEY UK_ApiTokens_Key (`Key`)",
+            "reason": "API token keys should be unique to prevent conflicts and security issues"
+        },
+        {
+            "table": "Users",
+            "column": "UserName",
+            "issue": "missing_unique",
+            "priority": 1,
+            "suggestedConstraint": "UNIQUE KEY UK_Users_UserName (UserName)",
+            "reason": "Usernames should be unique to prevent authentication conflicts"
+        },
+        {
+            "table": "Users",
+            "column": "Email",
+            "issue": "missing_unique",
+            "priority": 1,
+            "suggestedConstraint": "UNIQUE KEY UK_Users_Email (Email)",
+            "reason": "Email addresses should be unique for user identification and communication"
+        },
+        {
+            "table": "Users",
+            "column": "UserName",
+            "issue": "missing_not_null",
+            "priority": 2,
+            "suggestedConstraint": "ALTER TABLE Users MODIFY UserName VARCHAR(255) NOT NULL",
+            "reason": "Username is essential for user identification and should not be nullable"
+        },
+        {
+            "table": "Users",
+            "column": "Email",
+            "issue": "missing_not_null",
+            "priority": 2,
+            "suggestedConstraint": "ALTER TABLE Users MODIFY Email VARCHAR(255) NOT NULL",
+            "reason": "Email is essential for user communication and identification"
+        },
+        {
+            "table": "Roles",
+            "column": null,
+            "issue": "missing_unique",
+            "priority": 2,
+            "suggestedConstraint": "UNIQUE KEY UK_Roles_SiteId_Name (SiteId, Name)",
+            "reason": "Role names should be unique within a site to prevent confusion"
+        },
+        {
+            "table": "Folders",
+            "column": null,
+            "issue": "missing_unique",
+            "priority": 3,
+            "suggestedConstraint": "UNIQUE KEY UK_Folders_SiteId_ParentId_Name (SiteId, ParentId, Name)",
+            "reason": "Folder names should be unique within the same parent folder and site"
+        },
+        {
+            "table": "Files",
+            "column": null,
+            "issue": "missing_unique",
+            "priority": 3,
+            "suggestedConstraint": "UNIQUE KEY UK_Files_SiteId_FolderId_Name (SiteId, FolderId, Name)",
+            "reason": "File names should be unique within the same folder and site"
+        },
+        {
+            "table": "Pages",
+            "column": null,
+            "issue": "missing_unique",
+            "priority": 2,
+            "suggestedConstraint": "UNIQUE KEY UK_Pages_SiteId_Path (SiteId, Path)",
+            "reason": "Page paths should be unique within a site to prevent routing conflicts"
+        },
+        {
+            "table": "GlobalSettings",
+            "column": null,
+            "issue": "missing_unique",
+            "priority": 4,
+            "suggestedConstraint": "UNIQUE KEY UK_GlobalSettings_Singleton (Id)",
+            "reason": "Assuming only one row should exist, consider application-level enforcement or check constraint"
+        },
+        {
+            "table": "Settings",
+            "column": null,
+            "issue": "missing_unique",
+            "priority": 4,
+            "suggestedConstraint": "UNIQUE KEY UK_Settings_Singleton (Id)",
+            "reason": "Assuming only one row should exist, consider application-level enforcement or check constraint"
+        }
+    ]
+}

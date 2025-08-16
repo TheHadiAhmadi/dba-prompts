@@ -1,0 +1,1111 @@
+{
+    "tables": [
+        {
+            "name": "ApiTokens",
+            "description": "Stores API tokens used for authentication and authorization purposes",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the API token",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "Name",
+                    "description": "Name of the API token",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Description",
+                    "description": "Description of the API token",
+                    "dataType": "TEXT",
+                    "constraints": []
+                },
+                {
+                    "name": "Key",
+                    "description": "API key value",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Secret",
+                    "description": "API secret value",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ExpireAt",
+                    "description": "Expiration date and time of the API token",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                },
+                {
+                    "name": "Enabled",
+                    "description": "Indicates if the API token is enabled",
+                    "dataType": "TINYINT(1)",
+                    "constraints": [
+                        "NOT NULL",
+                        "DEFAULT 1"
+                    ]
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created the API token",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the API token was created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified the API token",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the API token was last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                }
+            ]
+        },
+        {
+            "name": "ApiTokenPolicies",
+            "description": "Stores policies associated with API tokens, defining access permissions",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the policy",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "ApiTokenId",
+                    "description": "Foreign key referencing the associated API token",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY REFERENCES ApiTokens(Id) ON DELETE CASCADE"
+                    ]
+                },
+                {
+                    "name": "Area",
+                    "description": "Area or scope of the policy",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Actions",
+                    "description": "Actions allowed by this policy",
+                    "dataType": "TEXT",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "GlobalSettings",
+            "description": "Stores global application settings",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the global settings",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "SuperAdmins",
+                    "description": "Comma-separated list of super administrator user identifiers",
+                    "dataType": "TEXT",
+                    "constraints": []
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created the global settings",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the global settings were created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified the global settings",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the global settings were last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                }
+            ]
+        },
+        {
+            "name": "PluginDefinitions",
+            "description": "Stores definitions for available plugins in the system",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the plugin definition",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "Name",
+                    "description": "Name of the plugin",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Category",
+                    "description": "Category of the plugin",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Assembly",
+                    "description": "Assembly name where the plugin is implemented",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Icon",
+                    "description": "Icon identifier for the plugin",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "Description",
+                    "description": "Description of the plugin",
+                    "dataType": "TEXT",
+                    "constraints": []
+                },
+                {
+                    "name": "Stylesheets",
+                    "description": "Stylesheets associated with the plugin",
+                    "dataType": "TEXT",
+                    "constraints": []
+                },
+                {
+                    "name": "Locked",
+                    "description": "Indicates if the plugin definition is locked",
+                    "dataType": "TINYINT(1)",
+                    "constraints": [
+                        "NOT NULL",
+                        "DEFAULT 0"
+                    ]
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created the plugin definition",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the plugin definition was created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified the plugin definition",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the plugin definition was last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                }
+            ]
+        },
+        {
+            "name": "PluginDefinitionTypes",
+            "description": "Stores types associated with plugin definitions",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the plugin definition type",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "PluginDefinitionId",
+                    "description": "Foreign key referencing the associated plugin definition",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY REFERENCES PluginDefinitions(Id) ON DELETE CASCADE"
+                    ]
+                },
+                {
+                    "name": "Name",
+                    "description": "Name of the plugin definition type",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Type",
+                    "description": "Type identifier",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "IsDefault",
+                    "description": "Indicates if this is the default type for the plugin definition",
+                    "dataType": "TINYINT(1)",
+                    "constraints": [
+                        "NOT NULL",
+                        "DEFAULT 0"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Sites",
+            "description": "Stores information about websites or applications managed by the system",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the site",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "Name",
+                    "description": "Name of the site",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Description",
+                    "description": "Description of the site",
+                    "dataType": "TEXT",
+                    "constraints": []
+                },
+                {
+                    "name": "Urls",
+                    "description": "Comma-separated list of URLs associated with the site",
+                    "dataType": "TEXT",
+                    "constraints": []
+                },
+                {
+                    "name": "LayoutId",
+                    "description": "Identifier for the default layout of the site",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "DetailLayoutId",
+                    "description": "Identifier for the detail page layout",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "EditLayoutId",
+                    "description": "Identifier for the edit page layout",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created the site",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the site was created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified the site",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the site was last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                }
+            ]
+        },
+        {
+            "name": "Settings",
+            "description": "Stores general settings configurations",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the settings",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created the settings",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the settings were created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified the settings",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the settings were last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                }
+            ]
+        },
+        {
+            "name": "SettingValues",
+            "description": "Stores individual setting values associated with settings configurations",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the setting value",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "SettingsId",
+                    "description": "Foreign key referencing the associated settings configuration",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY REFERENCES Settings(Id) ON DELETE CASCADE"
+                    ]
+                },
+                {
+                    "name": "Key",
+                    "description": "Key identifier for the setting value",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Value",
+                    "description": "Value of the setting",
+                    "dataType": "TEXT",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Users",
+            "description": "Stores user account information for authentication and authorization",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the user",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "UserName",
+                    "description": "Username for login",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "NormalizedUserName",
+                    "description": "Normalized version of the username for case-insensitive lookups",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "Email",
+                    "description": "Email address of the user",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "NormalizedEmail",
+                    "description": "Normalized version of the email for case-insensitive lookups",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "EmailConfirmed",
+                    "description": "Indicates if the user's email has been confirmed",
+                    "dataType": "TINYINT(1)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "PasswordHash",
+                    "description": "Hashed password for the user",
+                    "dataType": "TEXT",
+                    "constraints": []
+                },
+                {
+                    "name": "SecurityStamp",
+                    "description": "Security stamp for tracking security-related changes",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ConcurrencyStamp",
+                    "description": "Concurrency stamp for optimistic concurrency control",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "PhoneNumber",
+                    "description": "Phone number of the user",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "PhoneNumberConfirmed",
+                    "description": "Indicates if the user's phone number has been confirmed",
+                    "dataType": "TINYINT(1)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "TwoFactorEnabled",
+                    "description": "Indicates if two-factor authentication is enabled for the user",
+                    "dataType": "TINYINT(1)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "LockoutEnd",
+                    "description": "Date and time when the user lockout ends",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                },
+                {
+                    "name": "LockoutEnabled",
+                    "description": "Indicates if user lockout is enabled",
+                    "dataType": "TINYINT(1)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "AccessFailedCount",
+                    "description": "Number of failed access attempts",
+                    "dataType": "INT",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "LoginAt",
+                    "description": "Date and time of the last login",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                },
+                {
+                    "name": "LoginCount",
+                    "description": "Total number of logins",
+                    "dataType": "INT",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "PasswordChangedAt",
+                    "description": "Date and time when the password was last changed",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                },
+                {
+                    "name": "PasswordChangedBy",
+                    "description": "User who last changed the password",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "Enabled",
+                    "description": "Indicates if the user account is enabled",
+                    "dataType": "TINYINT(1)",
+                    "constraints": [
+                        "NOT NULL",
+                        "DEFAULT 1"
+                    ]
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created this user account",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the user account was created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified this user account",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the user account was last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                },
+                {
+                    "name": "AuthenticatorKey",
+                    "description": "Key used for authenticator applications",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "FirstName",
+                    "description": "First name of the user",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "LastName",
+                    "description": "Last name of the user",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                }
+            ]
+        },
+        {
+            "name": "Roles",
+            "description": "Stores role definitions for access control within sites",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the role",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "SiteId",
+                    "description": "Foreign key referencing the associated site",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY REFERENCES Sites(Id) ON DELETE CASCADE"
+                    ]
+                },
+                {
+                    "name": "Name",
+                    "description": "Name of the role",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Description",
+                    "description": "Description of the role",
+                    "dataType": "TEXT",
+                    "constraints": []
+                },
+                {
+                    "name": "Type",
+                    "description": "Type of the role (represented as an enum value)",
+                    "dataType": "INT",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created the role",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the role was created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified the role",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the role was last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                }
+            ]
+        },
+        {
+            "name": "Folders",
+            "description": "Stores folder structures for organizing files within sites",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the folder",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "SiteId",
+                    "description": "Foreign key referencing the associated site",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY REFERENCES Sites(Id) ON DELETE CASCADE"
+                    ]
+                },
+                {
+                    "name": "Name",
+                    "description": "Name of the folder",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "NormalizedName",
+                    "description": "Normalized name of the folder for case-insensitive lookups",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ParentId",
+                    "description": "Identifier of the parent folder (for hierarchical structure)",
+                    "dataType": "CHAR(36)",
+                    "constraints": []
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created the folder",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the folder was created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified the folder",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the folder was last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                }
+            ]
+        },
+        {
+            "name": "Files",
+            "description": "Stores file information within the system",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the file",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "SiteId",
+                    "description": "Foreign key referencing the associated site",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY REFERENCES Sites(Id) ON DELETE CASCADE"
+                    ]
+                },
+                {
+                    "name": "Name",
+                    "description": "Name of the file",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "NormalizedName",
+                    "description": "Normalized name of the file for case-insensitive lookups",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "FolderId",
+                    "description": "Foreign key referencing the associated folder",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY REFERENCES Folders(Id) ON DELETE CASCADE"
+                    ]
+                },
+                {
+                    "name": "Extension",
+                    "description": "File extension",
+                    "dataType": "VARCHAR(10)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ContentType",
+                    "description": "MIME type of the file",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Size",
+                    "description": "Size of the file in bytes",
+                    "dataType": "BIGINT",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created the file",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the file was created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified the file",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the file was last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                }
+            ]
+        },
+        {
+            "name": "Blocks",
+            "description": "Stores reusable content blocks for pages within sites",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the block",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "SiteId",
+                    "description": "Foreign key referencing the associated site",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY REFERENCES Sites(Id) ON DELETE CASCADE"
+                    ]
+                },
+                {
+                    "name": "Name",
+                    "description": "Name of the block",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Category",
+                    "description": "Category of the block",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Description",
+                    "description": "Description of the block",
+                    "dataType": "TEXT",
+                    "constraints": []
+                },
+                {
+                    "name": "Content",
+                    "description": "Content of the block",
+                    "dataType": "TEXT",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created the block",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the block was created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified the block",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the block was last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                }
+            ]
+        },
+        {
+            "name": "Pages",
+            "description": "Stores page information within sites",
+            "fields": [
+                {
+                    "name": "Id",
+                    "description": "Unique identifier for the page",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "name": "SiteId",
+                    "description": "Foreign key referencing the associated site",
+                    "dataType": "CHAR(36)",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY REFERENCES Sites(Id) ON DELETE CASCADE"
+                    ]
+                },
+                {
+                    "name": "Title",
+                    "description": "Title of the page",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ParentId",
+                    "description": "Identifier of the parent page (for hierarchical structure)",
+                    "dataType": "CHAR(36)",
+                    "constraints": []
+                },
+                {
+                    "name": "Order",
+                    "description": "Display order of the page",
+                    "dataType": "INT",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "Path",
+                    "description": "URL path of the page",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "LayoutId",
+                    "description": "Identifier for the layout used by this page",
+                    "dataType": "CHAR(36)",
+                    "constraints": []
+                },
+                {
+                    "name": "EditLayoutId",
+                    "description": "Identifier for the edit layout used by this page",
+                    "dataType": "CHAR(36)",
+                    "constraints": []
+                },
+                {
+                    "name": "DetailLayoutId",
+                    "description": "Identifier for the detail layout used by this page",
+                    "dataType": "CHAR(36)",
+                    "constraints": []
+                },
+                {
+                    "name": "Locked",
+                    "description": "Indicates if the page is locked from editing",
+                    "dataType": "TINYINT(1)",
+                    "constraints": [
+                        "NOT NULL",
+                        "DEFAULT 0"
+                    ]
+                },
+                {
+                    "name": "CreatedBy",
+                    "description": "User who created the page",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "CreatedAt",
+                    "description": "Date and time when the page was created",
+                    "dataType": "DATETIME",
+                    "constraints": [
+                        "NOT NULL"
+                    ]
+                },
+                {
+                    "name": "ModifiedBy",
+                    "description": "User who last modified the page",
+                    "dataType": "VARCHAR(255)",
+                    "constraints": []
+                },
+                {
+                    "name": "ModifiedAt",
+                    "description": "Date and time when the page was last modified",
+                    "dataType": "DATETIME",
+                    "constraints": []
+                }
+            ]
+        }
+    ],
+    "notes": "The database schema shows a well-structured content management system with clear separation of concerns. Key relationships include: ApiTokens to ApiTokenPolicies (1:N), PluginDefinitions to PluginDefinitionTypes (1:N), Sites as a central entity connecting to Roles, Folders, Files, Blocks, and Pages (1:N relationships), and Settings to SettingValues (1:N). The schema uses CHAR(36) for GUID primary keys consistently across all tables. Several tables have audit fields (CreatedBy, CreatedAt, ModifiedBy, ModifiedAt) which is good for tracking changes. Indexes are created on foreign keys and frequently queried columns. Some potential normalization issues include storing comma-separated values in GlobalSettings.SuperAdmins and Sites.Urls fields, which could be normalized into separate tables for better query performance and data integrity. The use of TINYINT(1) for boolean values is consistent throughout. All tables use InnoDB engine which supports foreign key constraints."
+}
