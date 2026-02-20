@@ -1,0 +1,358 @@
+{
+    "tableAnalysis": [
+        {
+            "table": "dbo.ApiTokens",
+            "purpose": "Stores API tokens for authentication and authorization of external API access with expiration and enable/disable functionality",
+            "structure": "Core token management table with fields for name, description, key, secret, expiration, enabled status, and audit fields with foreign keys to Users for creation/modification tracking"
+        },
+        {
+            "table": "dbo.ApiTokenPolicies",
+            "purpose": "Defines access policies for API tokens specifying allowed areas and actions for granular authorization control",
+            "structure": "Policy definition table with foreign key to ApiTokens, area specification, and actions stored as NVARCHAR(MAX) with cascading delete relationship"
+        },
+        {
+            "table": "dbo.GlobalSettings",
+            "purpose": "Central repository for global application settings with audit tracking",
+            "structure": "Settings container table with audit fields referencing Users for creation and modification tracking"
+        },
+        {
+            "table": "dbo.SuperAdmins",
+            "purpose": "Manages super administrator users with many-to-one relationship to GlobalSettings",
+            "structure": "Normalized junction table linking GlobalSettings to Users with cascading delete on both parent relationships"
+        },
+        {
+            "table": "dbo.PluginDefinitions",
+            "purpose": "Stores definitions for pluggable components including assembly information and metadata",
+            "structure": "Plugin metadata table with name, category, assembly details, icon, description, and audit fields with user references"
+        },
+        {
+            "table": "dbo.PluginDefinitionTypes",
+            "purpose": "Defines types associated with plugin definitions for component classification",
+            "structure": "Plugin type classification table with foreign key to PluginDefinitions, type name, and default indicator with cascading delete"
+        },
+        {
+            "table": "dbo.Sites",
+            "purpose": "Manages multiple website instances with layout configurations and metadata",
+            "structure": "Site management table with name, description, layout references to Pages table, and audit fields with user references"
+        },
+        {
+            "table": "dbo.SiteUrls",
+            "purpose": "Stores multiple URLs associated with sites in normalized structure",
+            "structure": "Normalized URL storage table with foreign key to Sites and cascading delete relationship"
+        },
+        {
+            "table": "dbo.Settings",
+            "purpose": "Container for application settings with audit tracking",
+            "structure": "Generic settings container with audit fields referencing Users for tracking purposes"
+        },
+        {
+            "table": "dbo.SettingValues",
+            "purpose": "Key-value store for individual setting values with composite key support",
+            "structure": "Setting values table with foreign key to Settings, key-value pairs, and composite index on SettingsId and Key for performance"
+        },
+        {
+            "table": "dbo.Users",
+            "purpose": "Core user management table storing authentication, profile, and security information",
+            "structure": "Comprehensive user table with authentication fields, security stamps, phone/email confirmation, lockout management, login tracking, and audit fields with self-referencing foreign keys"
+        },
+        {
+            "table": "dbo.Roles",
+            "purpose": "Role-based access control definitions scoped to specific sites",
+            "structure": "Site-scoped role definitions with name, description, type enumeration, and audit fields with user references"
+        },
+        {
+            "table": "dbo.Folders",
+            "purpose": "Hierarchical folder structure for file organization within sites",
+            "structure": "Recursive folder structure table with site scoping, parent-child relationships, name normalization, and audit fields with user references"
+        },
+        {
+            "table": "dbo.Files",
+            "purpose": "File metadata storage with association to folders and sites",
+            "structure": "File metadata table with site and folder relationships, file properties (extension, content type, size), and audit fields with user references"
+        },
+        {
+            "table": "dbo.Blocks",
+            "purpose": "Reusable content blocks for website composition",
+            "structure": "Content block table with site scoping, category classification, content storage, and audit fields with user references"
+        },
+        {
+            "table": "dbo.Pages",
+            "purpose": "Hierarchical page structure for website content management",
+            "structure": "Recursive page structure with site scoping, parent-child relationships, layout references, path management, ordering, and audit fields with user references"
+        }
+    ],
+    "relationshipAnalysis": [
+        {
+            "tables": [
+                "ApiTokens",
+                "Users"
+            ],
+            "description": "ApiTokens references Users twice for CreatedBy and ModifiedBy with foreign key constraints ensuring data integrity"
+        },
+        {
+            "tables": [
+                "ApiTokenPolicies",
+                "ApiTokens"
+            ],
+            "description": "ApiTokenPolicies has mandatory foreign key relationship to ApiTokens with cascading delete for policy cleanup"
+        },
+        {
+            "tables": [
+                "GlobalSettings",
+                "Users"
+            ],
+            "description": "GlobalSettings references Users twice for CreatedBy and ModifiedBy with foreign key constraints for audit tracking"
+        },
+        {
+            "tables": [
+                "SuperAdmins",
+                "GlobalSettings"
+            ],
+            "description": "SuperAdmins has mandatory foreign key to GlobalSettings with cascading delete ensuring cleanup of super admin associations"
+        },
+        {
+            "tables": [
+                "SuperAdmins",
+                "Users"
+            ],
+            "description": "SuperAdmins references Users with foreign key and cascading delete for user-based super admin management"
+        },
+        {
+            "tables": [
+                "PluginDefinitions",
+                "Users"
+            ],
+            "description": "PluginDefinitions references Users twice for CreatedBy and ModifiedBy with foreign key constraints for audit tracking"
+        },
+        {
+            "tables": [
+                "PluginDefinitionTypes",
+                "PluginDefinitions"
+            ],
+            "description": "PluginDefinitionTypes has mandatory foreign key to PluginDefinitions with cascading delete for type cleanup"
+        },
+        {
+            "tables": [
+                "Sites",
+                "Pages"
+            ],
+            "description": "Sites references Pages three times for LayoutId, DetailLayoutId, and EditLayoutId creating mandatory layout relationships"
+        },
+        {
+            "tables": [
+                "Sites",
+                "Users"
+            ],
+            "description": "Sites references Users twice for CreatedBy and ModifiedBy with foreign key constraints for audit tracking"
+        },
+        {
+            "tables": [
+                "SiteUrls",
+                "Sites"
+            ],
+            "description": "SiteUrls has mandatory foreign key to Sites with cascading delete for URL cleanup when sites are removed"
+        },
+        {
+            "tables": [
+                "Settings",
+                "Users"
+            ],
+            "description": "Settings references Users twice for CreatedBy and ModifiedBy with foreign key constraints for audit tracking"
+        },
+        {
+            "tables": [
+                "SettingValues",
+                "Settings"
+            ],
+            "description": "SettingValues has mandatory foreign key to Settings with cascading delete for value cleanup"
+        },
+        {
+            "tables": [
+                "Users",
+                "Users"
+            ],
+            "description": "Users has self-referencing foreign keys for PasswordChangedBy, CreatedBy, and ModifiedBy enabling comprehensive user audit trails"
+        },
+        {
+            "tables": [
+                "Roles",
+                "Sites"
+            ],
+            "description": "Roles has mandatory foreign key to Sites with cascading delete ensuring role cleanup when sites are removed"
+        },
+        {
+            "tables": [
+                "Roles",
+                "Users"
+            ],
+            "description": "Roles references Users twice for CreatedBy and ModifiedBy with foreign key constraints for audit tracking"
+        },
+        {
+            "tables": [
+                "Folders",
+                "Sites"
+            ],
+            "description": "Folders has mandatory foreign key to Sites with cascading delete ensuring folder cleanup when sites are removed"
+        },
+        {
+            "tables": [
+                "Folders",
+                "Folders"
+            ],
+            "description": "Folders has self-referencing foreign key for ParentId enabling hierarchical folder structure"
+        },
+        {
+            "tables": [
+                "Folders",
+                "Users"
+            ],
+            "description": "Folders references Users twice for CreatedBy and ModifiedBy with foreign key constraints for audit tracking"
+        },
+        {
+            "tables": [
+                "Files",
+                "Sites"
+            ],
+            "description": "Files has mandatory foreign key to Sites with cascading delete ensuring file cleanup when sites are removed"
+        },
+        {
+            "tables": [
+                "Files",
+                "Folders"
+            ],
+            "description": "Files has mandatory foreign key to Folders with cascading delete ensuring file cleanup when folders are removed"
+        },
+        {
+            "tables": [
+                "Files",
+                "Users"
+            ],
+            "description": "Files references Users twice for CreatedBy and ModifiedBy with foreign key constraints for audit tracking"
+        },
+        {
+            "tables": [
+                "Blocks",
+                "Sites"
+            ],
+            "description": "Blocks has mandatory foreign key to Sites with cascading delete ensuring block cleanup when sites are removed"
+        },
+        {
+            "tables": [
+                "Blocks",
+                "Users"
+            ],
+            "description": "Blocks references Users twice for CreatedBy and ModifiedBy with foreign key constraints for audit tracking"
+        },
+        {
+            "tables": [
+                "Pages",
+                "Sites"
+            ],
+            "description": "Pages has mandatory foreign key to Sites with cascading delete ensuring page cleanup when sites are removed"
+        },
+        {
+            "tables": [
+                "Pages",
+                "Pages"
+            ],
+            "description": "Pages has self-referencing foreign keys for ParentId, LayoutId, EditLayoutId, and DetailLayoutId enabling hierarchical and layout relationships"
+        },
+        {
+            "tables": [
+                "Pages",
+                "Users"
+            ],
+            "description": "Pages references Users twice for CreatedBy and ModifiedBy with foreign key constraints for audit tracking"
+        }
+    ],
+    "designPatterns": [
+        {
+            "title": "Audit Trail Pattern",
+            "description": "Consistent use of CreatedBy, CreatedAt, ModifiedBy, ModifiedAt columns across tables with foreign key references to Users table for comprehensive audit tracking"
+        },
+        {
+            "title": "Hierarchical Data Pattern",
+            "description": "Self-referencing foreign keys implemented in Pages and Folders tables to represent tree structures with parent-child relationships"
+        },
+        {
+            "title": "Normalized Settings Pattern",
+            "description": "Separation of Settings container table from SettingValues key-value pairs enabling flexible configuration storage with efficient querying"
+        },
+        {
+            "title": "Cascading Delete Pattern",
+            "description": "Extensive use of ON DELETE CASCADE constraints for related entities ensuring data consistency and automatic cleanup of dependent records"
+        },
+        {
+            "title": "GUID Primary Keys",
+            "description": "Universal use of CHAR(36) GUIDs as primary keys across all tables enabling distributed key generation and avoiding sequence dependencies"
+        },
+        {
+            "title": "Separation of Concerns",
+            "description": "Normalized design separating core entities (Sites, Pages, Files) from their related properties (SiteUrls, SettingValues) for better data organization"
+        }
+    ],
+    "performanceInsights": [
+        {
+            "title": "Index on Large Text Columns",
+            "description": "SettingValues table stores Value as NVARCHAR(MAX) which could impact index performance on IX_SettingValues_SettingsId_Key if values are large",
+            "priority": 3
+        },
+        {
+            "title": "User Lookup Performance",
+            "description": "Users table has single composite index on UserName and Email but individual queries on NormalizedUserName or NormalizedEmail may be suboptimal",
+            "priority": 4
+        },
+        {
+            "title": "Page Path Queries",
+            "description": "Pages table has IX_Pages_SiteId_Path index which should support efficient routing but may need optimization for wildcard path matching",
+            "priority": 2
+        },
+        {
+            "title": "Recursive Queries Performance",
+            "description": "Hierarchical queries on Pages and Folders tables using self-referencing keys may require CTE optimization for deep structures",
+            "priority": 3
+        },
+        {
+            "title": "Plugin Type Queries",
+            "description": "PluginDefinitionTypes table has index on PluginDefinitionId but queries filtering by Type or Name may benefit from additional indexes",
+            "priority": 2
+        },
+        {
+            "title": "Role Site Queries",
+            "description": "Roles table has composite index on SiteId and Name supporting site-scoped role lookups but individual field queries may need additional indexes",
+            "priority": 2
+        }
+    ],
+    "potentialIssues": [
+        {
+            "title": "CHAR(36) Primary Key Storage Overhead",
+            "description": "Using CHAR(36) for GUID storage is less efficient than NEWID() or NEWSEQUENTIALID() with appropriate data types causing storage and index bloat",
+            "priority": 4
+        },
+        {
+            "title": "Missing Unique Constraints",
+            "description": "Normalized tables like SiteUrls, SettingValues lack unique constraints for business key combinations potentially allowing duplicate entries",
+            "priority": 3
+        },
+        {
+            "title": "Page Layout Circular References",
+            "description": "Pages table has multiple self-referencing foreign keys (LayoutId, EditLayoutId, DetailLayoutId) that could create circular reference scenarios",
+            "priority": 3
+        },
+        {
+            "title": "User Self-Reference Complexity",
+            "description": "Users table has multiple self-referencing foreign keys which could complicate data maintenance and cascade delete operations",
+            "priority": 2
+        },
+        {
+            "title": "VARCHAR(255) Limitations",
+            "description": "Several VARCHAR(255) fields may be restrictive for longer content, particularly SecurityStamp, ConcurrencyStamp, and AuthenticatorKey fields",
+            "priority": 2
+        },
+        {
+            "title": "File Path Storage",
+            "description": "Files and Folders tables lack physical path storage which may impact file system integration performance",
+            "priority": 2
+        }
+    ]
+}

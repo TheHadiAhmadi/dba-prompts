@@ -1,0 +1,88 @@
+{
+    "recommendations": [
+        {
+            "type": "IndexOptimization",
+            "description": "Add indexes on frequently queried columns in Users table for better performance on authentication-related queries",
+            "impact": "High",
+            "effort": "Low",
+            "implementation": "CREATE INDEX IX_Users_NormalizedUserName ON Users (NormalizedUserName); CREATE INDEX IX_Users_NormalizedEmail ON Users (NormalizedEmail);"
+        },
+        {
+            "type": "IndexOptimization",
+            "description": "Add composite index on ApiTokens table for key-based lookups",
+            "impact": "High",
+            "effort": "Low",
+            "implementation": "CREATE INDEX IX_ApiTokens_Key_Enabled ON ApiTokens (`Key`, Enabled);"
+        },
+        {
+            "type": "IndexOptimization",
+            "description": "Add index on Files table for folder-based queries",
+            "impact": "Medium",
+            "effort": "Low",
+            "implementation": "CREATE INDEX IX_Files_FolderId ON Files (FolderId);"
+        },
+        {
+            "type": "IndexOptimization",
+            "description": "Add index on Pages table for parent-child relationships and ordering",
+            "impact": "Medium",
+            "effort": "Low",
+            "implementation": "CREATE INDEX IX_Pages_ParentId_Order ON Pages (ParentId, `Order`);"
+        },
+        {
+            "type": "SchemaOptimization",
+            "description": "Normalize SuperAdmins column in GlobalSettings table by creating a separate table for better data integrity",
+            "impact": "Medium",
+            "effort": "Medium",
+            "implementation": "CREATE TABLE GlobalSettingSuperAdmins (Id CHAR(36) PRIMARY KEY, GlobalSettingsId CHAR(36) NOT NULL, UserName VARCHAR(255) NOT NULL, CONSTRAINT FK_GlobalSettingSuperAdmins_GlobalSettings FOREIGN KEY (GlobalSettingsId) REFERENCES GlobalSettings(Id) ON DELETE CASCADE); CREATE INDEX IX_GlobalSettingSuperAdmins_GlobalSettingsId ON GlobalSettingSuperAdmins (GlobalSettingsId);"
+        },
+        {
+            "type": "SchemaOptimization",
+            "description": "Add foreign key constraint from Sites to LayoutId referencing a Layouts table (assuming such table exists) for referential integrity",
+            "impact": "Medium",
+            "effort": "Medium",
+            "implementation": "ALTER TABLE Sites ADD CONSTRAINT FK_Sites_Layouts FOREIGN KEY (LayoutId) REFERENCES Layouts(Id); ALTER TABLE Sites ADD CONSTRAINT FK_Sites_DetailLayouts FOREIGN KEY (DetailLayoutId) REFERENCES Layouts(Id); ALTER TABLE Sites ADD CONSTRAINT FK_Sites_EditLayouts FOREIGN KEY (EditLayoutId) REFERENCES Layouts(Id);"
+        },
+        {
+            "type": "DataQuality",
+            "description": "Add constraints to ensure email format validation in Users table",
+            "impact": "Medium",
+            "effort": "Low",
+            "implementation": "ALTER TABLE Users ADD CONSTRAINT CHK_Users_Email CHECK (Email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$');"
+        },
+        {
+            "type": "DataQuality",
+            "description": "Add constraints to ensure UserName is unique in Users table",
+            "impact": "High",
+            "effort": "Low",
+            "implementation": "ALTER TABLE Users ADD CONSTRAINT UK_Users_UserName UNIQUE (UserName);"
+        },
+        {
+            "type": "QueryOptimization",
+            "description": "Optimize queries joining ApiTokens with ApiTokenPolicies by ensuring proper indexing",
+            "impact": "High",
+            "effort": "Low",
+            "implementation": "Ensure IX_ApiTokenPolicies_ApiTokenId index exists (already present in schema). Consider adding covering index if queries select additional columns: CREATE INDEX IX_ApiTokenPolicies_ApiTokenId_Area ON ApiTokenPolicies (ApiTokenId, Area);"
+        },
+        {
+            "type": "BestPractices",
+            "description": "Add audit triggers to automatically update ModifiedAt and ModifiedBy fields",
+            "impact": "Medium",
+            "effort": "Medium",
+            "implementation": "CREATE TRIGGER tr_ApiTokens_Update BEFORE UPDATE ON ApiTokens FOR EACH ROW SET NEW.ModifiedAt = NOW(); Similar triggers needed for other tables with ModifiedAt columns."
+        },
+        {
+            "type": "BestPractices",
+            "description": "Convert TINYINT(1) columns to BOOLEAN type for better readability and semantic clarity",
+            "impact": "Low",
+            "effort": "Medium",
+            "implementation": "ALTER TABLE ApiTokens MODIFY Enabled BOOLEAN NOT NULL DEFAULT TRUE; (Repeat for all TINYINT(1) columns across tables)"
+        },
+        {
+            "type": "IndexOptimization",
+            "description": "Add index on PluginDefinitions Category for faster filtering",
+            "impact": "Medium",
+            "effort": "Low",
+            "implementation": "CREATE INDEX IX_PluginDefinitions_Category ON PluginDefinitions (Category);"
+        }
+    ]
+}

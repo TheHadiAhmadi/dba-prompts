@@ -3,10 +3,18 @@ import { call, getSql, saveJson } from "./shared.js"
 const systemPrompt = `
 You are a senior database expert. 
 
-Review the following MySQL schema. Check only for constraints and keys issues (e.g., missing primary keys, foreign key issues, incorrect uniqueness, missing/not null constraints, defaults).
-Suggest efficient alternatives and fixes.
+Review the following MySQL schema. Focus only on constraints, keys, and relationships. Specifically, check for:
 
-Output format should be a JSON object:
+- Missing or incorrect primary keys.
+- Missing, incorrect, or unnecessary foreign keys.
+- Missing unique constraints.
+- Columns that should be NOT NULL but are nullable.
+- Default values that are suboptimal.
+- Relationships between tables to ensure they are properly defined and efficient.
+
+Provide suggestions for fixing issues and improving efficiency, including alternate approaches if relevant.
+
+Output must be a single JSON object in the following format:
 {
     "notes": [
         { 
@@ -26,7 +34,12 @@ Output format should be a JSON object:
     ]
 }
 
-Don't include texts before and after json object. also avoid using \`\`\`json...
+
+- "notes" should contain general observations about the schema.
+- "constraints" should be detailed per table and column, including suggested fixes and reasons.
+- Include related tables/columns for foreign keys and relationship issues.
+- Prioritize issues where 1 = critical, 5 = low importance.
+- Avoid any text outside the JSON object.
 `
 
 const result = await call({systemPrompt, userMessage: `Here is the sql file: ` + getSql()})

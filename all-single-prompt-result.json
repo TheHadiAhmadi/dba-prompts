@@ -1,0 +1,201 @@
+{
+    "tableAnalysis": [
+        {
+            "tableName": "ApiTokens",
+            "purpose": "Stores API authentication tokens with metadata for external system access",
+            "structureFields": "Contains GUID primary key, token credentials (Key/Secret), expiration, enable/disable flag, and standard audit fields (CreatedBy, CreatedAt, ModifiedBy, ModifiedAt)"
+        },
+        {
+            "tableName": "ApiTokenPolicies",
+            "purpose": "Defines access policies and permissions for API tokens with area-based action control",
+            "structureFields": "Links to ApiTokens via foreign key, contains Area (scope) and Actions (JSON/text permissions), uses CASCADE delete"
+        },
+        {
+            "tableName": "GlobalSettings",
+            "purpose": "Stores system-wide configuration settings including super administrator definitions",
+            "structureFields": "Simple structure with SuperAdmins as comma-separated text field and standard audit fields"
+        },
+        {
+            "tableName": "PluginDefinitions",
+            "purpose": "Central registry for plugin metadata including assemblies, categories, and visual elements",
+            "structureFields": "Contains plugin identification (Name, Category, Assembly), presentation (Icon, Description, Stylesheets), locking mechanism, and audit fields"
+        },
+        {
+            "tableName": "PluginDefinitionTypes",
+            "purpose": "Defines available types within each plugin definition with default type selection",
+            "structureFields": "Child table of PluginDefinitions with Name, Type classification, and IsDefault boolean flag"
+        },
+        {
+            "tableName": "Sites",
+            "purpose": "Multi-tenant site configuration with layout management and URL mapping",
+            "structureFields": "Site metadata (Name, Description), URL list as comma-separated text, layout IDs for different views (Layout, Detail, Edit), and audit fields"
+        },
+        {
+            "tableName": "Settings",
+            "purpose": "Parent table for key-value configuration settings with audit tracking",
+            "structureFields": "Minimal structure serving as container for SettingValues, contains only ID and audit fields"
+        },
+        {
+            "tableName": "SettingValues",
+            "purpose": "Key-value pairs for configuration settings linked to Settings parent records",
+            "structureFields": "Foreign key to Settings, Key-Value pair structure with composite index on SettingsId and Key"
+        },
+        {
+            "tableName": "Users",
+            "purpose": "Complete user management with ASP.NET Identity integration including authentication and profile data",
+            "structureFields": "ASP.NET Identity fields (UserName, Email, PasswordHash, SecurityStamp), two-factor authentication, lockout controls, login tracking, custom fields (FirstName, LastName, AuthenticatorKey), and audit fields"
+        },
+        {
+            "tableName": "Roles",
+            "purpose": "Site-specific role definitions with type classification for access control",
+            "structureFields": "Linked to Sites, contains role metadata (Name, Description), Type enumeration, and audit fields"
+        },
+        {
+            "tableName": "Folders",
+            "purpose": "Hierarchical folder structure for file organization within sites",
+            "structureFields": "Site-scoped with self-referencing ParentId for hierarchy, normalized names for searching, and audit fields"
+        },
+        {
+            "tableName": "Files",
+            "purpose": "File metadata storage with folder organization and content type management",
+            "structureFields": "Links to Sites and Folders, file properties (Name, Extension, ContentType, Size), normalized names, and audit fields"
+        },
+        {
+            "tableName": "Blocks",
+            "purpose": "Reusable content blocks for CMS functionality with categorization",
+            "structureFields": "Site-scoped content blocks with Name, Category, Description, Content (likely HTML/text), and audit fields"
+        },
+        {
+            "tableName": "Pages",
+            "purpose": "Hierarchical page structure for CMS with multiple layout support and ordering",
+            "structureFields": "Site-scoped with self-referencing ParentId, page metadata (Title, Path, Order), multiple layout assignments (Layout, Edit, Detail), locking mechanism, and audit fields"
+        }
+    ],
+    "relationshipAnalysis": [
+        {
+            "relatedTables": "ApiTokens -> ApiTokenPolicies",
+            "description": "One-to-many relationship with CASCADE delete. Each API token can have multiple policies defining granular access control per area and action set."
+        },
+        {
+            "relatedTables": "PluginDefinitions -> PluginDefinitionTypes",
+            "description": "One-to-many relationship with CASCADE delete. Plugin definitions contain multiple type definitions with default type selection capability."
+        },
+        {
+            "relatedTables": "Settings -> SettingValues",
+            "description": "One-to-many relationship with CASCADE delete implementing key-value pattern. Settings act as logical grouping containers for related configuration values."
+        },
+        {
+            "relatedTables": "Sites -> Roles",
+            "description": "One-to-many relationship with CASCADE delete. Each site maintains its own role definitions for multi-tenant access control."
+        },
+        {
+            "relatedTables": "Sites -> Folders",
+            "description": "One-to-many relationship with CASCADE delete. Folders are site-scoped and form hierarchical structure through self-referencing ParentId."
+        },
+        {
+            "relatedTables": "Sites -> Files",
+            "description": "One-to-many relationship with CASCADE delete. Files belong to specific sites and are organized within folders."
+        },
+        {
+            "relatedTables": "Folders -> Files",
+            "description": "One-to-many relationship with CASCADE delete. Files are organized within folder hierarchy for structured storage."
+        },
+        {
+            "relatedTables": "Sites -> Blocks",
+            "description": "One-to-many relationship with CASCADE delete. Content blocks are site-specific for multi-tenant content isolation."
+        },
+        {
+            "relatedTables": "Sites -> Pages",
+            "description": "One-to-many relationship with CASCADE delete. Pages form hierarchical structure within sites through self-referencing ParentId."
+        }
+    ],
+    "designPatterns": [
+        {
+            "title": "Multi-Tenant Architecture",
+            "description": "Site-based multi-tenancy with SiteId foreign keys in Roles, Folders, Files, Blocks, and Pages tables ensuring data isolation between tenants."
+        },
+        {
+            "title": "Audit Trail Pattern",
+            "description": "Consistent audit fields (CreatedBy, CreatedAt, ModifiedBy, ModifiedAt) across all tables providing comprehensive change tracking and accountability."
+        },
+        {
+            "title": "Hierarchical Data Pattern",
+            "description": "Self-referencing foreign keys in Folders and Pages tables implementing tree structures for nested organization."
+        },
+        {
+            "title": "Key-Value Configuration Pattern",
+            "description": "Settings and SettingValues tables implement flexible configuration storage allowing dynamic key-value pairs without schema changes."
+        },
+        {
+            "title": "Plugin Architecture Pattern",
+            "description": "PluginDefinitions and PluginDefinitionTypes implement extensible plugin system with type definitions and metadata management."
+        },
+        {
+            "title": "Policy-Based Access Control",
+            "description": "ApiTokenPolicies table implements fine-grained access control with area-based action permissions."
+        },
+        {
+            "title": "Soft Delete Pattern",
+            "description": "Enabled flags in Users and ApiTokens, Locked flags in PluginDefinitions and Pages implement soft deletion and activation control."
+        }
+    ],
+    "performanceInsights": [
+        {
+            "title": "Missing Foreign Key Indexes",
+            "description": "Sites table layout references (LayoutId, DetailLayoutId, EditLayoutId) and Pages layout references lack corresponding foreign key constraints and indexes, potentially causing performance issues.",
+            "priority": 4
+        },
+        {
+            "title": "TEXT Column Performance Impact",
+            "description": "Multiple TEXT columns (Description, Content, Actions, SuperAdmins, Urls) may impact performance for large datasets. Consider VARCHAR limits where appropriate.",
+            "priority": 3
+        },
+        {
+            "title": "Comma-Separated Values Anti-Pattern",
+            "description": "GlobalSettings.SuperAdmins and Sites.Urls use comma-separated storage which prevents efficient querying and indexing. Consider normalized junction tables.",
+            "priority": 4
+        },
+        {
+            "title": "Hierarchical Query Performance",
+            "description": "Self-referencing tables (Folders, Pages) may require recursive queries which can be expensive. Consider implementing materialized path or nested set models for deep hierarchies.",
+            "priority": 3
+        },
+        {
+            "title": "GUID Primary Key Performance",
+            "description": "CHAR(36) GUID primary keys may impact INSERT performance and index size compared to auto-incrementing integers, especially with high-volume tables.",
+            "priority": 2
+        }
+    ],
+    "potentialIssues": [
+        {
+            "title": "Missing Referential Integrity",
+            "description": "Layout references in Sites and Pages tables lack foreign key constraints, potentially allowing orphaned references and data inconsistency.",
+            "priority": 5
+        },
+        {
+            "title": "Weak Data Validation",
+            "description": "Critical fields like Users.Email, ApiTokens.Key, and ApiTokens.Secret lack uniqueness constraints, potentially allowing duplicate values.",
+            "priority": 4
+        },
+        {
+            "title": "Security Concerns",
+            "description": "ApiTokens.Secret and Users.PasswordHash stored as VARCHAR/TEXT without explicit encryption indication may pose security risks if not properly encrypted at application level.",
+            "priority": 5
+        },
+        {
+            "title": "Normalization Violations",
+            "description": "Comma-separated values in GlobalSettings.SuperAdmins and Sites.Urls violate first normal form and prevent proper relational operations.",
+            "priority": 3
+        },
+        {
+            "title": "Inconsistent Boolean Representation",
+            "description": "Mix of TINYINT(1) and INT for boolean/enum fields creates inconsistency in data type usage and potential confusion.",
+            "priority": 2
+        },
+        {
+            "title": "Missing Cascade Rules",
+            "description": "User references in audit fields (CreatedBy, ModifiedBy) lack foreign key constraints, potentially creating orphaned references when users are deleted.",
+            "priority": 3
+        }
+    ]
+}

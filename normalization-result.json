@@ -1,0 +1,120 @@
+{
+    "notes": [
+        {
+            "content": "The schema shows a clear separation of concerns with well-defined tables for different entities. However, there are opportunities for optimization through denormalization in frequently accessed settings and policies.",
+            "priority": 3
+        },
+        {
+            "content": "Most tables use CHAR(36) for GUID primary keys which is appropriate, and foreign key relationships are properly established with cascade deletes where needed.",
+            "priority": 4
+        },
+        {
+            "content": "Some text fields store comma-separated values (SuperAdmins, Urls, Stylesheets) which could lead to parsing overhead and should be considered for normalization if frequently queried.",
+            "priority": 3
+        }
+    ],
+    "issues": [
+        {
+            "table": "GlobalSettings",
+            "columns": [
+                "SuperAdmins"
+            ],
+            "issue": "redundant_data",
+            "priority": 2,
+            "note": "Storing comma-separated super admin identifiers makes it difficult to query and maintain referential integrity. This could cause data anomalies.",
+            "suggestedChange": "Create a separate GlobalSettingsSuperAdmins table with individual admin references, possibly linking to Users table if applicable.",
+            "relatedTables": [
+                "Users"
+            ]
+        },
+        {
+            "table": "Sites",
+            "columns": [
+                "Urls"
+            ],
+            "issue": "redundant_data",
+            "priority": 3,
+            "note": "Comma-separated URLs in a single column make querying and validation difficult and can lead to data inconsistencies.",
+            "suggestedChange": "Create a separate SiteUrls table to store individual URLs with a foreign key relationship to Sites.",
+            "relatedTables": [
+                "Sites"
+            ]
+        },
+        {
+            "table": "PluginDefinitions",
+            "columns": [
+                "Stylesheets"
+            ],
+            "issue": "redundant_data",
+            "priority": 3,
+            "note": "Storing stylesheets as comma-separated values limits query flexibility and can cause parsing overhead.",
+            "suggestedChange": "Create a PluginDefinitionStylesheets table to normalize stylesheet references.",
+            "relatedTables": [
+                "PluginDefinitions"
+            ]
+        },
+        {
+            "table": "ApiTokenPolicies",
+            "columns": [
+                "Actions"
+            ],
+            "issue": "redundant_data",
+            "priority": 2,
+            "note": "Actions stored as text limits query performance and can cause parsing overhead when checking permissions.",
+            "suggestedChange": "Normalize actions into a separate ApiTokenPolicyActions table with foreign key to ApiTokenPolicies.",
+            "relatedTables": [
+                "ApiTokenPolicies"
+            ]
+        },
+        {
+            "table": "SettingValues",
+            "columns": null,
+            "issue": "denormalization_opportunity",
+            "priority": 2,
+            "note": "Frequently accessed settings could benefit from denormalization by including common settings directly in the Settings table for improved read performance.",
+            "suggestedChange": "Consider adding frequently accessed setting values as columns in the Settings table, or creating a denormalized view for common settings queries.",
+            "relatedTables": [
+                "Settings"
+            ]
+        },
+        {
+            "table": "Users",
+            "columns": null,
+            "issue": "denormalization_opportunity",
+            "priority": 3,
+            "note": "User information is queried frequently and could benefit from denormalization of commonly accessed related data.",
+            "suggestedChange": "Consider creating a denormalized view or materialized view that includes user roles and other frequently accessed related information.",
+            "relatedTables": [
+                "Roles"
+            ]
+        },
+        {
+            "table": "Pages",
+            "columns": [
+                "LayoutId",
+                "EditLayoutId",
+                "DetailLayoutId"
+            ],
+            "issue": "missing_relation",
+            "priority": 3,
+            "note": "Layout relationships are implied but not enforced through foreign key constraints, which could lead to orphaned references.",
+            "suggestedChange": "Add foreign key constraints to reference a Layouts table (if it exists) or create the Layouts table with proper relationships.",
+            "relatedTables": [
+                "Sites"
+            ]
+        },
+        {
+            "table": "Sites",
+            "columns": [
+                "LayoutId",
+                "DetailLayoutId",
+                "EditLayoutId"
+            ],
+            "issue": "missing_relation",
+            "priority": 3,
+            "note": "Layout relationships are implied but not enforced through foreign key constraints, which could lead to orphaned references.",
+            "suggestedChange": "Add foreign key constraints to reference a Layouts table (if it exists) or create the Layouts table with proper relationships.",
+            "relatedTables": []
+        }
+    ]
+}

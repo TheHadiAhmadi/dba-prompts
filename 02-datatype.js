@@ -27,7 +27,10 @@ Output format should be below JSON object:
    }
 }
 
-Don't include texts before and after json object. also avoid using \`\`\`json...
+## Requirements
+- Don't include texts before and after json object. 
+- avoid using Markdown blocks like \`\`\`json
+- Ensure all strings are properly escaped
 `
 
 const result = await call({systemPrompt, userMessage: `Here is the sql file: ` + getSql()})

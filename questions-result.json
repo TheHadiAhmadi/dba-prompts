@@ -1,0 +1,22 @@
+[
+    "What is the business purpose of API tokens and how are they used within the system?",
+    "What do the 'Area' and 'Actions' fields represent in the ApiTokenPolicies table - are these specific business domains or functional areas?",
+    "What types of users or systems are typically stored in the SuperAdmins field of GlobalSettings?",
+    "What is the relationship between PluginDefinitions and the actual business functionality they provide?",
+    "What do the different 'Category' values represent for PluginDefinitions and how are they used?",
+    "What is the significance of the 'Assembly' field in PluginDefinitions - does this relate to code deployment or business modules?",
+    "What are the possible values for the 'Type' enum in the Roles table and what business permissions do they represent?",
+    "How do Sites relate to the overall business structure - are these different websites, departments, or organizational units?",
+    "What is the business meaning of LayoutId, DetailLayoutId, and EditLayoutId in the Sites table?",
+    "What types of settings are stored in the Settings/SettingValues tables and how are they used?",
+    "What is the business workflow for file management through the Folders and Files tables?",
+    "What types of content are stored in Blocks and how are they used in the business process?",
+    "What is the hierarchical structure of Pages used for - is this a content management system or navigation structure?",
+    "What business rules determine when a Page or PluginDefinition should be 'Locked'?",
+    "How are the various layout IDs (LayoutId, EditLayoutId, DetailLayoutId) used in the business context?",
+    "What is the business significance of the 'Order' field in Pages?",
+    "What determines the 'Path' value for Pages and how is it used in the application?",
+    "Are there specific business rules around user authentication and the various security fields in the Users table?",
+    "What is the business relationship between Users, Roles, and Sites?",
+    "What types of files are typically stored and what business processes use them?"
+]

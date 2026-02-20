@@ -1,24 +1,20 @@
 {
     "notes": [
         {
-            "content": "Consider adding unique constraints on columns that should be unique but currently lack them, such as ApiTokens.Key or Users.UserName",
+            "content": "Several tables store comma-separated values (e.g., SuperAdmins in GlobalSettings, Urls in Sites) which violates normalization principles and makes querying difficult. Consider creating junction tables instead.",
+            "priority": 2
+        },
+        {
+            "content": "Many tables use CHAR(36) for GUIDs as primary keys. While functional, this can impact performance compared to auto-incrementing integers or ordered GUIDs. Consider using BINARY(16) with UUID_TO_BIN() for better storage efficiency.",
             "priority": 3
         },
         {
-            "content": "Users table has several nullable fields that might benefit from NOT NULL constraints depending on business logic (e.g., UserName, Email)",
-            "priority": 3
+            "content": "The schema lacks audit trail consistency. Some tables have CreatedBy/CreatedAt but not all have ModifiedBy/ModifiedAt. Consider implementing a standardized audit pattern.",
+            "priority": 4
         },
         {
-            "content": "Consider adding a unique constraint on Roles(SiteId, Name) to prevent duplicate role names within a site",
-            "priority": 3
-        },
-        {
-            "content": "Folders and Files tables might need unique constraints on (SiteId, Name) or (FolderId, Name) to prevent duplicates",
-            "priority": 3
-        },
-        {
-            "content": "Pages table lacks a unique constraint on (SiteId, Path) which could lead to duplicate URLs",
-            "priority": 3
+            "content": "Missing unique constraints on natural keys like UserName in Users, Name+SiteId combinations in Roles/Folders/Files/Pages could lead to data duplication issues.",
+            "priority": 2
         }
     ],
     "constraints": [
@@ -26,9 +22,9 @@
             "table": "ApiTokens",
             "column": "Key",
             "issue": "missing_unique",
-            "priority": 2,
+            "priority": 1,
             "suggestedConstraint": "UNIQUE KEY UK_ApiTokens_Key (`Key`)",
-            "reason": "API token keys should be unique to prevent conflicts and security issues"
+            "reason": "API keys should be unique to prevent conflicts and security issues"
         },
         {
             "table": "Users",
@@ -36,7 +32,7 @@
             "issue": "missing_unique",
             "priority": 1,
             "suggestedConstraint": "UNIQUE KEY UK_Users_UserName (UserName)",
-            "reason": "Usernames should be unique to prevent authentication conflicts"
+            "reason": "Usernames must be unique to ensure proper authentication"
         },
         {
             "table": "Users",
@@ -44,71 +40,119 @@
             "issue": "missing_unique",
             "priority": 1,
             "suggestedConstraint": "UNIQUE KEY UK_Users_Email (Email)",
-            "reason": "Email addresses should be unique for user identification and communication"
+            "reason": "Email addresses should be unique for password recovery and user identification"
         },
         {
             "table": "Users",
-            "column": "UserName",
-            "issue": "missing_not_null",
-            "priority": 2,
-            "suggestedConstraint": "ALTER TABLE Users MODIFY UserName VARCHAR(255) NOT NULL",
-            "reason": "Username is essential for user identification and should not be nullable"
+            "column": "NormalizedUserName",
+            "issue": "missing_unique",
+            "priority": 1,
+            "suggestedConstraint": "UNIQUE KEY UK_Users_NormalizedUserName (NormalizedUserName)",
+            "reason": "Normalized usernames should be unique for case-insensitive lookups"
         },
         {
             "table": "Users",
-            "column": "Email",
-            "issue": "missing_not_null",
-            "priority": 2,
-            "suggestedConstraint": "ALTER TABLE Users MODIFY Email VARCHAR(255) NOT NULL",
-            "reason": "Email is essential for user communication and identification"
+            "column": "NormalizedEmail",
+            "issue": "missing_unique",
+            "priority": 1,
+            "suggestedConstraint": "UNIQUE KEY UK_Users_NormalizedEmail (NormalizedEmail)",
+            "reason": "Normalized emails should be unique for case-insensitive lookups"
         },
         {
             "table": "Roles",
-            "column": null,
+            "column": "Name",
             "issue": "missing_unique",
             "priority": 2,
             "suggestedConstraint": "UNIQUE KEY UK_Roles_SiteId_Name (SiteId, Name)",
-            "reason": "Role names should be unique within a site to prevent confusion"
+            "reason": "Role names should be unique per site to avoid confusion"
         },
         {
             "table": "Folders",
-            "column": null,
+            "column": "Name",
             "issue": "missing_unique",
-            "priority": 3,
+            "priority": 2,
             "suggestedConstraint": "UNIQUE KEY UK_Folders_SiteId_ParentId_Name (SiteId, ParentId, Name)",
             "reason": "Folder names should be unique within the same parent folder and site"
         },
         {
             "table": "Files",
-            "column": null,
+            "column": "Name",
             "issue": "missing_unique",
-            "priority": 3,
+            "priority": 2,
             "suggestedConstraint": "UNIQUE KEY UK_Files_SiteId_FolderId_Name (SiteId, FolderId, Name)",
             "reason": "File names should be unique within the same folder and site"
         },
         {
             "table": "Pages",
-            "column": null,
+            "column": "Path",
             "issue": "missing_unique",
             "priority": 2,
             "suggestedConstraint": "UNIQUE KEY UK_Pages_SiteId_Path (SiteId, Path)",
-            "reason": "Page paths should be unique within a site to prevent routing conflicts"
+            "reason": "Page paths must be unique per site to ensure proper routing"
         },
         {
-            "table": "GlobalSettings",
-            "column": null,
+            "table": "PluginDefinitions",
+            "column": "Name",
             "issue": "missing_unique",
-            "priority": 4,
-            "suggestedConstraint": "UNIQUE KEY UK_GlobalSettings_Singleton (Id)",
-            "reason": "Assuming only one row should exist, consider application-level enforcement or check constraint"
+            "priority": 2,
+            "suggestedConstraint": "UNIQUE KEY UK_PluginDefinitions_Name (Name)",
+            "reason": "Plugin definition names should be unique to prevent conflicts"
         },
         {
-            "table": "Settings",
-            "column": null,
-            "issue": "missing_unique",
+            "table": "Sites",
+            "column": "Name",
+            "issue": "missing_not_null",
+            "priority": 2,
+            "suggestedConstraint": "ALTER COLUMN Name SET NOT NULL",
+            "reason": "Site names should be required for identification"
+        },
+        {
+            "table": "SettingValues",
+            "column": "SettingsId",
+            "issue": "missing_not_null",
+            "priority": 1,
+            "suggestedConstraint": "ALTER COLUMN SettingsId SET NOT NULL",
+            "reason": "SettingValues must be associated with a Settings record"
+        },
+        {
+            "table": "Filenames",
+            "column": "Extension",
+            "issue": "missing_not_null",
+            "priority": 3,
+            "suggestedConstraint": "ALTER COLUMN Extension SET NOT NULL",
+            "reason": "File extensions should be required even for files without extensions (which would be empty string)"
+        },
+        {
+            "table": "Files",
+            "column": "FolderId",
+            "issue": "missing_not_null",
+            "priority": 1,
+            "suggestedConstraint": "ALTER COLUMN FolderId SET NOT NULL",
+            "reason": "Files must belong to a folder"
+        },
+        {
+            "table": "Pages",
+            "column": "ParentId",
+            "issue": "suboptimal_default",
             "priority": 4,
-            "suggestedConstraint": "UNIQUE KEY UK_Settings_Singleton (Id)",
-            "reason": "Assuming only one row should exist, consider application-level enforcement or check constraint"
+            "suggestedConstraint": "DEFAULT NULL",
+            "reason": "Page ParentId should default to NULL for root pages rather than requiring explicit NULL values"
+        },
+        {
+            "table": "ApiTokenPolicies",
+            "column": "ApiTokenId",
+            "issue": "missing_not_null",
+            "priority": 1,
+            "suggestedConstraint": "ALTER COLUMN ApiTokenId SET NOT NULL",
+            "reason": "ApiTokenPolicies must be associated with an ApiToken"
+        },
+        {
+            "table": "PluginDefinitionTypes",
+            "column": "PluginDefinitionId",
+            "issue": "missing_not_null",
+            "priority": 1,
+            "suggestedConstraint": "ALTER COLUMN PluginDefinitionId SET NOT NULL",
+            "reason": "PluginDefinitionTypes must be associated with a PluginDefinition"
         }
     ]
 }
